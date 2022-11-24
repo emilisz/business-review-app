@@ -14,10 +14,10 @@ class RoutesTest extends TestCase
      *
      * @return void
      */
-    public function test_home_page_returns_200()
+    public function test_index_page_redirects_to_business_listings_page()
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
+        $response->assertStatus(302);
     }
 }

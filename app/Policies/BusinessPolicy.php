@@ -17,7 +17,7 @@ class BusinessPolicy
      * @param  \App\Models\Business  $business
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Business $business)
+    public function update(User $user, Business  $business)
     {
         return $user->id === $business->user_id;
     }
@@ -29,7 +29,7 @@ class BusinessPolicy
      * @param  \App\Models\Business  $business
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Business $business)
+    public function delete(User $user, Business  $business)
     {
         return $user->id === $business->user_id;
     }

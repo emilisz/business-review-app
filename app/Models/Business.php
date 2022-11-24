@@ -19,4 +19,10 @@ class Business extends Model
     {
         return $this->hasMany(Rating::class);
     }
+
+    public function createNew($data)
+    {
+       return auth()->user()->businesses()->create($data);
+//        dd($data);
+    }
 }
