@@ -3,107 +3,40 @@
 
 namespace App\Domain\Repositories;
 
-
-use App\Domain\Interfaces\BusinessRepositoryInterface;
+use App\Domain\Interfaces\RepositoryInterface;
 use App\Models\Business;
-use Illuminate\Database\Eloquent\Collection;
 
-class BusinessRepository implements BusinessRepositoryInterface
+
+class BusinessRepository implements RepositoryInterface
 {
-//    public function __construct(
-//        private string $title,
-//        private string $description,
-//    )
-//    {
-//    }
-
-//    /**
-//     * @return string
-//     */
-//    public function getTitle(): string
-//    {
-//        return $this->title;
-//    }
-//
-//    /**
-//     * @param string $title
-//     */
-//    public function setTitle(string $title): void
-//    {
-//        $this->title = $title;
-//    }
-//
-//    /**
-//     * @return string
-//     */
-//    public function getDescription(): string
-//    {
-//        return $this->description;
-//    }
-//
-//    /**
-//     * @param string $description
-//     */
-//    public function setDescription(string $description): void
-//    {
-//        $this->description = $description;
-//    }
-
     public function mainQuery()
     {
         return Business::withCount('ratings')
             ->withAvg('ratings','rating')
-            ->get()
-            ->map(function ($business) {
-                return [
-                    'id' => $business->id,
-                    'title' => $business->title,
-                    'description' => $business->description,
-                    'updated_at' => $business->updated_at,
-                    'avg_rating' => $business->ratings_avg_rating,
-                    'ratings_count' => $business->ratings_count,
-                    'image_url' => $business->image_url
-                ];
-            });
+            ->with('ratings')
+            ->get();
+
 }
 
-    public function search($name)
-    {
-        // TODO: Implement search() method.
-    }
 
     public function getOne($id)
     {
-       return Business::find($id);
+        return $this->mainQuery()->where('id', $id)->first();
     }
 
-    public function getAll($order = 'asc', $results = 15)
+    public function getAll()
     {
-//        return Business::get()->sortBy('created_at',$order)->paginate($results);
-        return Business::withCount('ratings')
-            ->withAvg('ratings','rating')
-            ->get()
-            ->map(function ($business) {
-                return [
-                    'id' => $business->id,
-                    'title' => $business->title,
-                    'description' => $business->description,
-                    'updated_at' => $business->updated_at,
-                    'avg_rating' => $business->ratings_avg_rating,
-                    'ratings_count' => $business->ratings_count,
-                    'image_url' => $business->image_url
-                ];
-            })->sortByDesc('avg_rating')->paginate($results);
+        return $this->mainQuery();
     }
 
-    public function getAllByUser($user_id, $results = 15)
+    public function getAllByUser($user_id)
     {
-       return Business::where('user_id', $user_id)->get()->paginate($results);
+        return $this->mainQuery()->where('user_id', $user_id);
     }
 
-    public function getAllByRating($orderBy)
+    public function getAllBy($orderBy = 'rating_avg_rating')
     {
-        // TODO: Implement getAllByRating() method.
+        return $this->mainQuery()->sortByDesc($orderBy);
     }
 
 

@@ -21,8 +21,8 @@ class DatabaseSeeder extends Seeder
 //        \App\Models\Rating::factory(100)->create();
 
         Business::factory()
-            ->count(50)
-            ->hasRatings(3)
+            ->count(20)
+            ->hasRatings(1)
             ->create();
 
          User::factory()->create([

@@ -9,15 +9,23 @@ class Rating extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['rating', 'comment','business_id','user_id'];
+    protected $fillable = ['rating', 'comment', 'business_id', 'user_id'];
 
     public function business()
     {
         return $this->belongsTo(Business::class);
-}
+    }
 
     public function user()
     {
         return $this->belongsTo(User::class);
-}
+    }
+
+    public function createNew(Business $business, $data)
+    {
+        $data['business_id'] =  $business->id;
+       return auth()->user()->ratings()->create($data);
+//        dd($data);
+    }
+
 }

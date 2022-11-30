@@ -24,8 +24,6 @@ class BusinessTest extends TestCase
 
     public function test_user_can_view_all_businesses(): void
     {
-//        $this->withoutExceptionHandling();
-
         $business = Business::factory()->create();
 
         $this->get(route('home'))
@@ -55,22 +53,19 @@ class BusinessTest extends TestCase
         $this->post(route('business.store'), $attributes)->assertRedirect(route('home'));
 
         $this->assertDatabaseHas('businesses', $attributes);
-        $this->get('/')->assertSee($attributes['title']);
+        $this->get(route('home'))->assertSee($attributes['title']);
     }
 
     public function test_a_business_requires_a_title(): void
     {
-//        $this->withoutExceptionHandling();
-        $this->logIn();
         $attributes = Business::factory()->raw(['title' => '']);
-        $this->post(route('business.store'), $attributes)->assertSessionHasErrors('title');
+        $this->logIn()->post(route('business.store'), $attributes)->assertSessionHasErrors('title');
     }
 
     public function test_a_business_requires_a_description(): void
     {
-        $this->logIn();
         $attributes = Business::factory()->raw(['description' => '']);
-        $this->post(route('business.store'), $attributes)->assertSessionHasErrors('description');
+        $this->logIn()->post(route('business.store'), $attributes)->assertSessionHasErrors('description');
     }
 
     public function test_only_authenticated_user_can_create_a_business(): void
@@ -94,17 +89,14 @@ class BusinessTest extends TestCase
 
     public function test_auth_user_cannot_see_another_user_business_edit_page(): void
     {
-        $this->logIn();
         $business = Business::factory()->create();
-        $this->get(route('business.edit', $business))->assertStatus(403);
+        $this->logIn()->get(route('business.edit', $business))->assertStatus(403);
     }
 
     public function test_owner_can_see_their_business_edit_page(): void
     {
         $business = Business::factory()->create();
-        $this->logIn($business->user);
-
-        $this->get(route('business.edit', $business))->assertSee($business['title']);
+        $this->logIn($business->user)->get(route('business.edit', $business))->assertSee($business['title']);
     }
 
     public function test_owner_can_update_their_business(): void
@@ -117,7 +109,7 @@ class BusinessTest extends TestCase
             'title' => 'updated title',
             'description' => 'updated description'
         ]);
-        $this->get('/')->assertSee($business->title);
+        $this->get(route('home'))->assertSee($business->title);
 
     }
 
@@ -125,7 +117,7 @@ class BusinessTest extends TestCase
     {
         $business = Business::factory()->create();
 
-        $this->logIn($business->user)->delete(route('business.delete', $business));
+        $this->logIn($business->user)->delete(route('business.delete', $business['id']));
         $this->assertModelMissing($business);
 
     }

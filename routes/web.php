@@ -1,9 +1,11 @@
 <?php
 
-use App\Domain\Controllers\BusinessController;
-use App\Domain\Controllers\RatingController;
+
 use App\Domain\Repositories\BusinessRepository;
+use App\Domain\Repositories\RatingRepository;
+use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RatingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,8 +19,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/', function (){
+    return redirect()->route('home');
+});
+
 Route::controller(BusinessController::class)->group(function () {
-    Route::get('/', 'index')->name('home');
+    Route::get('/businesses', 'index')->name('home');
+    Route::get('/businesses/orderby={order?}', 'orderby')->name('order');
     Route::get('/businesses/{business}', 'show')->name('business.show');
 
     Route::middleware(['auth'])->prefix('business')->group(function () {
@@ -31,12 +38,16 @@ Route::controller(BusinessController::class)->group(function () {
 });
 
 Route::middleware('auth')->controller(RatingController::class)->group(function () {
-    Route::post('/businesses/{business}', 'store')->name('rating.store');
+    Route::post('/businesses/{business}/ratings', 'store')->name('rating.store');
+    Route::delete('/businesses/{business}/ratings/{rating}', 'delete')->name('rating.delete');
 });
 
 
 Route::get('/dashboard', function () {
-    return view('dashboard')->with(['businesses' => (new BusinessRepository)->getAllByUser(auth()->id())]);
+    $businesses = (new BusinessRepository)->getAllByUser(auth()->id());
+    $ratings =    (new RatingRepository())->getAllByUser(auth()->id())->paginate(2);
+
+    return view('dashboard', compact('businesses', 'ratings'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

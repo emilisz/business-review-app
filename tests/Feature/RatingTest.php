@@ -66,6 +66,22 @@ class RatingTest extends TestCase
         $this->get(route('business.show', $business))->assertSee($rating['rating']);
     }
 
+    public function test_rating_owner_can_delete_rating(): void
+    {
+        $rating = Rating::factory()->create();
+        $this->logIn($rating->user);
+
+        $this->delete(route('rating.delete',[$rating->business, $rating]));
+        $this->assertModelMissing($rating);
+    }
+
+    public function test_guest_cannot_delete_rating(): void
+    {
+        $rating = Rating::factory()->create();
+        $this->delete(route('rating.delete',[$rating->business, $rating]));
+        $this->assertModelExists($rating);
+    }
+
 
     /**
      * @dataProvider numbersProvider

@@ -2,7 +2,7 @@
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ $business['title'] }}
-            <p class="text-gray-400">{{round($business['avg_rating'])}}{{str_repeat("⭐", round($business['avg_rating']))}}</p>
+            <p class="text-gray-400">{{round($business['ratings_avg_rating'])}}{{str_repeat("⭐", round($business['ratings_avg_rating']))}}</p>
         </h2>
     </x-slot>
 
@@ -24,17 +24,19 @@
 
         <div class="justify-end flex flex-row gap-4 p-3">
             <x-button-link @class([
-            'bg-gray-500']) :href="route('home')">
+            'bg-gray-500']) :href="url()->previous()">
             {{ __('Back') }}
             </x-button-link>
-
-            @can('update', $business)
+{{--{{dd($business['user_id'])}}--}}
+            @can('business-update', $business)
                 <x-button-link @class([
-                'bg-amber-500']) :href="route('business.edit', ['business' => $business['id']])">
+                'bg-amber-500']) :href="route('business.edit', $business)">
                 {{ __('Edit') }}
                 </x-button-link>
+            @endcan
 
-                <form action="{{route('business.delete', ['business' => $business['id']])}}" method="POST">
+            @can('business-delete', $business)
+                <form action="{{route('business.delete', $business)}}" method="POST">
                     @method('delete')
                     @csrf
                     <x-primary-button @class([
@@ -85,9 +87,9 @@
                             <p class="text-gray-400">{{round($item['rating'])}}{{str_repeat("⭐", round($item['rating']))}} </p>
                             <div class="flex flex-row gap-2">
                                 <p>{{$item['created_at']->diffForHumans()}}</p>
-                                @can('delete-rating', $item)
+                                @can('rating-delete', $item)
                                     <form
-                                        action="{{route('ratings.delete',['business'=>$business['id'],'rating'=> $item['id']])}}"
+                                        action="{{route('rating.delete',['business' => $business['id'], 'rating'=> $item['id']])}}"
                                         method="POST">
                                         @method('delete')
                                         @csrf

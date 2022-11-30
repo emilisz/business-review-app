@@ -8,6 +8,7 @@ use App\Models\Rating;
 use App\Policies\BusinessPolicy;
 use App\Policies\RatingPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -30,6 +31,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define('rating-delete', [RatingPolicy::class, 'delete']);
+        Gate::define('business-delete', [BusinessPolicy::class, 'delete']);
+        Gate::define('business-update', [BusinessPolicy::class, 'update']);
     }
 }

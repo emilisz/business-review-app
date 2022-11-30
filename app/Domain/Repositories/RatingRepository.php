@@ -4,24 +4,34 @@
 namespace App\Domain\Repositories;
 
 
-use App\Domain\Interfaces\RatingRepositoryInterface;
+use App\Domain\Interfaces\RepositoryInterface;
 use App\Models\Rating;
 
-class RatingRepository implements RatingRepositoryInterface
+class RatingRepository implements RepositoryInterface
 {
+
+    public function mainQuery()
+    {
+        return Rating::with('business','user')->get();
+    }
 
     public function getOne($id)
     {
-        return Rating::find($id);
+        return $this->mainQuery()->where('id', $id)->first();
     }
 
-    public function getAll(string $order, int $results)
+    public function getAll()
     {
-        return Rating::get()->paginate($results);
+        return $this->mainQuery();
     }
 
-    public function getAllByUser($user_id)
+    public function getAllByUser($user_id, $results = 15)
     {
-        return Rating::where('user_id', $user_id)->get();
+        return $this->mainQuery()->where('user_id', $user_id);
+    }
+
+    public function getAllBy($orderBy = 'avg_rating')
+    {
+        return $this->mainQuery()->sortByDesc($orderBy);
     }
 }

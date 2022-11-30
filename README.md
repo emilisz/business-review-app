@@ -19,9 +19,16 @@
 - Show all information about business
 - Show all comments and evaluations
 
-### TroubleShooting
-- If you get the error message as Cannot write to directory "/var/www/laravel9/storage/images" while running the seed command, you need to give read write permission to the storage folder.
-chmod -R 755 storage
-- php artisan storage:link
+### Instruction
+- Clone project
+- Create .env file with values
+- Write in terminal: 
+```
+$ composer install
+$ php artisan migrate --seed
+$ php artisan serve
+$ npm run dev
+
+```
 
 
