@@ -52,14 +52,6 @@ Route::middleware('auth')->controller(PaymentController::class)->group(function 
 });
 
 
-//Route::get('/dashboard', function () {
-//    $businesses = (new BusinessRepository)->getAllByUser(auth()->id())->get();
-//    $ratings =    (new RatingRepository)->getAllByUser(auth()->id())->paginate(2);
-//    $payments = (new PaymentRepository())->getAllByUser(auth()->id())->get();
-//
-//    return view('dashboard', compact('businesses', 'ratings', 'payments'));
-//})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

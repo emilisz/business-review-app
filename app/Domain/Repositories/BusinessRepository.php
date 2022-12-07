@@ -13,7 +13,7 @@ class BusinessRepository implements RepositoryInterface
 {
     public function mainQuery(): Builder
     {
-        return Business::select(['id', 'title', 'user_id','created_at','updated_at', 'description', 'image_url'])
+        return Business::select(['id', 'title', 'user_id', 'created_at', 'updated_at', 'description', 'image_url'])
             ->withCount('ratings')
             ->withAvg('ratings', 'rating')
             ->with('ratings');
@@ -22,7 +22,7 @@ class BusinessRepository implements RepositoryInterface
 
     public function getOne($id)
     {
-        return  $this->mainQuery()
+        return $this->mainQuery()
             ->where('id', $id)
             ->selectVisibleData($id)
             ->firstOrFail();
