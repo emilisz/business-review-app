@@ -37,10 +37,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-//    public function __construct(protected ?RepositoryInterface $repository)
-//    {
-//    }
-
     /**
      * The attributes that should be cast.
      *
@@ -73,7 +69,6 @@ class User extends Authenticatable
     public  function isOwner($businessId)
     {
         return $this->businesses->contains($businessId);
-//        return Business::where('user_id', auth()->id())->where('id', $businessId)->exists();
     }
 
 

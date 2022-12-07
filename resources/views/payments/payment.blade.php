@@ -18,7 +18,6 @@
                 @endif
             </div>
             <div class="grid lg:grid-cols-2 gap-3 rounded justify-center">
-{{--                {{dd($providers)}}--}}
                 @foreach($providers as $provider)
                     <form method="POST" action="{{ route('payment.store') }}">
                         @csrf
@@ -30,26 +29,7 @@
                         </x-primary-button>
                     </form>
                 @endforeach
-{{--                <form method="POST" action="{{ route('payment.store') }}">--}}
-{{--                    @csrf--}}
-{{--                    <input type="text" name="payment_method" value="stripe" hidden>--}}
-{{--                    <x-primary-button @class([--}}
-{{--                    'w-full py-6 justify-center bg-green-600 border-black shadow']) onclick="event.preventDefault();--}}
-{{--                    this.closest('form').submit();">--}}
-{{--                    {!!   __("Stripe"). " (".$premiumPrice."&euro;)" !!}--}}
-{{--                    </x-primary-button>--}}
-{{--                </form>--}}
 
-
-{{--                <form method="POST" action="{{ route('payment.store') }}">--}}
-{{--                    @csrf--}}
-{{--                    <input type="text" name="payment_method" value="paypal" hidden>--}}
-{{--                    <x-primary-button @class([--}}
-{{--                    'w-full py-6 justify-center bg-green-600 border-black shadow']) onclick="event.preventDefault();--}}
-{{--                    this.closest('form').submit();">--}}
-{{--                    {!!   __("Paypal"). " (".$premiumPrice."&euro;)" !!}--}}
-{{--                    </x-primary-button>--}}
-{{--                </form>--}}
             </div>
 
         </div>
