@@ -3,6 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Domain\Interfaces\RepositoryInterface;
+use App\Domain\Repositories\PaymentRepository;
+use App\Domain\Repositories\RatingRepository;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -34,6 +37,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+//    public function __construct(protected ?RepositoryInterface $repository)
+//    {
+//    }
+
     /**
      * The attributes that should be cast.
      *
@@ -52,4 +59,22 @@ class User extends Authenticatable
     {
         return $this->hasMany(Rating::class);
     }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    public function isPremium():bool
+    {
+        return count((new PaymentRepository())->isValid(auth()->id())) > 0;
+    }
+
+    public  function isOwner($businessId)
+    {
+        return $this->businesses->contains($businessId);
+//        return Business::where('user_id', auth()->id())->where('id', $businessId)->exists();
+    }
+
+
 }

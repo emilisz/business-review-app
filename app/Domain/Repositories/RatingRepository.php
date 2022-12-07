@@ -4,15 +4,16 @@
 namespace App\Domain\Repositories;
 
 
-use App\Domain\Interfaces\RepositoryInterface;
 use App\Models\Rating;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class RatingRepository implements RepositoryInterface
 {
 
-    public function mainQuery()
+    public function mainQuery(): Builder
     {
-        return Rating::with('business','user')->get();
+        return Rating::with('business','user');
     }
 
     public function getOne($id)
@@ -20,18 +21,18 @@ class RatingRepository implements RepositoryInterface
         return $this->mainQuery()->where('id', $id)->first();
     }
 
-    public function getAll()
+    public function getAll():Collection
     {
-        return $this->mainQuery();
+        return $this->mainQuery()->get();
     }
 
-    public function getAllByUser($user_id, $results = 15)
+    public function getAllByUser($user_id):Collection
     {
-        return $this->mainQuery()->where('user_id', $user_id);
+        return $this->mainQuery()->where('user_id', $user_id)->get();
     }
 
-    public function getAllBy($orderBy = 'avg_rating')
+    public function getAllBy($orderBy = 'avg_rating'):Collection
     {
-        return $this->mainQuery()->sortByDesc($orderBy);
+        return $this->mainQuery()->get()->sortByDesc($orderBy);
     }
 }

@@ -1,8 +1,10 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ $business['title'] }}
-            <p class="text-gray-400">{{round($business['ratings_avg_rating'])}}{{str_repeat("⭐", round($business['ratings_avg_rating']))}}</p>
+{{--            {{dd($business)}}--}}
+            {{ $business->title }}
+            <p class="text-gray-400 flex flex-row gap-2">{{str_repeat("⭐", round($business->ratings_avg_rating))}}
+                ({{round($business->ratings_count)}})</p>
         </h2>
     </x-slot>
 
@@ -10,10 +12,34 @@
         <div class="max-w-7xl bg-white mx-auto">
             <div class="grid md:grid-cols-3 gap-2">
                 <img class=" w-full h-60 md:h-full object-cover rounded-t-lg md:rounded-none md:rounded-l-lg"
-                     src="{{$business['image_url'] ?: asset('img/placeholder.png')}}" alt=""/>
-                <div class="md:col-span-2  sm:px-6 lg:px-8">
-                    <div>
-                        <p>{{ $business['description'] }}</p>
+                     src="{{$business->image_url ?: asset('img/placeholder.png')}}" alt=""/>
+                <div class="md:col-span-2 sm:px-6 lg:px-8">
+                    <div class="p-3">
+                        <p>{{ $business->description }}</p>
+                    </div>
+
+                    <div class="border-l p-2">
+                        <h5 class="font-semibold border-b">Contact info:</h5>
+                        @if(auth()->check() && (auth()->user()->isPremium() || auth()->user()->isOwner($business->id)))
+                            <div class="p-2">
+                                <div class="flex flex-justify-between">
+                                    {{__('Phone')}}: <span class="font-semibold pl-3">{{$business->phone}}</span>
+                                </div>
+                                <div class="flex flex-justify-between">
+                                    {{__('Address')}}: <span class="font-semibold pl-3">{{$business->address}}</span>
+                                </div>
+                                <div class="flex flex-justify-between">
+                                    {{__('Employees')}}: <span
+                                        class="font-semibold pl-3">{{$business->employees}}</span>
+                                </div>
+                            </div>
+                        @else
+                            <div
+                                class="py-8 px-3 bg-white bg-opacity-40 backdrop-blur-md rounded drop-shadow-lg font-sans">
+                                Premium content visible only to
+                                <a class="text-blue-700 underline" href="{{route('payment.create')}}">premium users</a>
+                            </div>
+                        @endif
                     </div>
 
                 </div>
@@ -27,7 +53,6 @@
             'bg-gray-500']) :href="url()->previous()">
             {{ __('Back') }}
             </x-button-link>
-{{--{{dd($business['user_id'])}}--}}
             @can('business-update', $business)
                 <x-button-link @class([
                 'bg-amber-500']) :href="route('business.edit', $business)">
@@ -52,7 +77,7 @@
             <div class="p-3">
                 <h2 class="text-lg">Comments</h2>
                 @auth
-                    <form action="{{route('rating.store', ['business' => $business['id']])}}" method="POST">
+                    <form action="{{route('rating.store', ['business' => $business->id])}}" method="POST">
                         @csrf
                         <div class="w-full flex flex-col gap-3">
                             <x-input-label for="comment">Comment</x-input-label>
@@ -79,17 +104,17 @@
             </div>
 
             <div class="flex flex-col gap-2">
-                @foreach($business['ratings'] as $item)
+                @foreach($business->ratings as $rating)
                     <div class="rounded shadow border p-3 text-gray-400 relative">
-                        <p class="">- {{$item['user'] ? $item['user']['name'] : 'unknown'}}</p>
-                        <p class="text-gray-600">{{$item['comment']}}</p>
+                        <p class="">- {{$rating->user ? $rating->user->name : 'unknown'}}</p>
+                        <p class="text-gray-600">{{$rating->comment}}</p>
                         <div class="flex justify-between">
-                            <p class="text-gray-400">{{round($item['rating'])}}{{str_repeat("⭐", round($item['rating']))}} </p>
+                            <p class="text-gray-400">{{round($rating->rating)}}{{str_repeat("⭐", round($rating->rating))}} </p>
                             <div class="flex flex-row gap-2">
-                                <p>{{$item['created_at']->diffForHumans()}}</p>
-                                @can('rating-delete', $item)
+                                <p>{{$rating->created_at->diffForHumans()}}</p>
+                                @can('rating-delete', $rating)
                                     <form
-                                        action="{{route('rating.delete',['business' => $business['id'], 'rating'=> $item['id']])}}"
+                                        action="{{route('rating.delete',['business' => $business, 'rating'=> $rating])}}"
                                         method="POST">
                                         @method('delete')
                                         @csrf

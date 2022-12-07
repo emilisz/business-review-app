@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain\Interfaces\RepositoryInterface;
+
+use App\Domain\Repositories\RepositoryInterface;
 use App\Http\Requests\StoreBusinessRequest;
 use App\Http\Requests\UpdateBusinessRequest;
 use App\Models\Business;
@@ -16,14 +17,19 @@ class BusinessController extends Controller
 
     public function index()
     {
-        $businesses = $this->repository->getAll()->paginate(6);
+        $businesses = $this->repository
+            ->getAll()
+            ->paginate(config('constants.pagination_number'));
+
         return view('business.index', compact('businesses'));
     }
 
     public function orderby($order)
     {
-        $businesses = $this->repository->getAllBy($order)->paginate(6);
-//        dd($businesses);
+        $businesses = $this->repository
+            ->getAllBy($order)
+            ->paginate(config('constants.pagination_number'));
+
         return view('business.index', compact('businesses'));
     }
 
@@ -35,19 +41,23 @@ class BusinessController extends Controller
     public function store(StoreBusinessRequest $request)
     {
         (new Business)->createNew($request->validated());
+
         return redirect()->route('home')->with('status', "Saved!");
     }
 
     public function show(Business $business)
     {
         $business = $this->repository->getOne($business->id);
+
         return view('business.show', compact('business'));
     }
 
     public function edit(Business $business)
     {
-        $business = $this->repository->getOne($business->id);
         Gate::authorize('business-update', $business);
+
+        $business = $this->repository->getOne($business->id);
+
         return view('business.edit', compact('business'));
     }
 
@@ -55,14 +65,17 @@ class BusinessController extends Controller
     {
         $business = $this->repository->getOne($business->id);
         $business->update($request->validated());
+
         return redirect()->route('business.show', $business)->with('status', "Updated!");
     }
 
     public function delete(Business $business)
     {
-        $business = $this->repository->getOne($business->id);
         Gate::authorize('business-delete', $business);
+
+        $business = $this->repository->getOne($business->id);
         $business->delete();
+
         return redirect()->route('home')->with('status', "Deleted!");
     }
 }

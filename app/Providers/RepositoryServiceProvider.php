@@ -4,8 +4,8 @@
 namespace App\Providers;
 
 
-use App\Domain\Interfaces\RepositoryInterface;
 use App\Domain\Repositories\BusinessRepository;
+use App\Domain\Repositories\RepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -16,6 +16,8 @@ class RepositoryServiceProvider extends ServiceProvider
             RepositoryInterface::class,
             BusinessRepository::class
         );
+
+
 
     }
 }

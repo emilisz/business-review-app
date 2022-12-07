@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Repositories\BusinessRepository;
+use App\Domain\Repositories\PaymentRepository;
+use App\Domain\Repositories\RatingRepository;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -9,6 +12,20 @@ use Illuminate\Support\Facades\Redirect;
 
 class ProfileController extends Controller
 {
+    /**
+     * Display the user's dashboard.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function dashboard()
+    {
+        $userId = auth()->id();
+        $businesses = (new BusinessRepository)->getAllByUser($userId);
+        $ratings =    (new RatingRepository)->getAllByUser($userId);
+        $payments = (new PaymentRepository())->getAllByUser($userId);
+
+        return view('dashboard', compact('businesses', 'ratings', 'payments'));
+    }
     /**
      * Display the user's profile form.
      *

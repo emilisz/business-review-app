@@ -23,9 +23,10 @@ class Rating extends Model
 
     public function createNew(Business $business, $data)
     {
-        $data['business_id'] =  $business->id;
-       return auth()->user()->ratings()->create($data);
-//        dd($data);
+        return self::create([
+            ...$data,
+            ...['business_id' =>  $business->id, 'user_id' => auth()->id()]
+            ]);
     }
 
 }

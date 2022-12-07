@@ -28,7 +28,10 @@ class UpdateBusinessRequest extends FormRequest
     {
         return [
             'title' => ['required'],
-            'description' => ['required']
+            'description' => ['required'],
+            'phone' => ['nullable','string', 'max:20'],
+            'address' => ['nullable','string', 'max:255'],
+            'employees' => ['nullable','numeric']
         ];
     }
 }

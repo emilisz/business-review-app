@@ -9,13 +9,12 @@
                 <x-slot name="trigger">
                     <button
                         class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
-                        <div>
-                            @if(last(request()->segments()) === 'orderby=ratings_avg_rating')
-                                Popular first
-                            @elseif(last(request()->segments()) === 'orderby=updated_at')
-                                Updated at
-                            @elseif(last(request()->segments()) === 'orderby=created_at')
-                                Created at
+                        <div class="flex flex-row gap-2">
+                            <span>Order by: </span>
+                            @if(($pos = strpos(last(request()->segments()), "=")) !== FALSE)
+                                <span class="capitalize">
+                                    {{ str_replace ("_", " ",substr(last(request()->segments()), $pos+1))}}
+                                </span>
                             @else
                                 Show all
                             @endif
@@ -62,16 +61,17 @@
                         <div class="flex flex-col md:flex-row md:max-w-xl rounded-lg bg-white shadow-lg">
                             <img
                                 class=" w-full h-60 md:h-60 object-cover md:w-48 rounded-t-lg md:rounded-none md:rounded-l-lg"
-                                src="{{$item['image_url'] ?: asset('img/placeholder.png')}}" alt=""/>
+                                src="{{$item->image_url ?: asset('img/placeholder.png')}}" alt=""/>
                             <div class="p-6 flex flex-col justify-start">
-                                <a href="{{route('business.show', ['business' =>$item['id']])}}"
-                                   class="text-gray-900 text-xl font-medium mb-2">{{$item['title']}}</a>
-                                <p class="text-gray-400">{{round($item['ratings_avg_rating'])}}{{str_repeat("⭐", round($item['ratings_avg_rating']))}}</p>
+                                <a href="{{route('business.show', ['business' =>$item->id])}}"
+                                   class="text-gray-900 text-xl font-medium mb-2">{{$item->title}}</a>
+                                <p class="text-gray-400">{{str_repeat("⭐", round($item->ratings_avg_rating))}}
+                                    ({{round($item->ratings_count)}})</p>
                                 <p class=" text-red-500 text-base mb-4">
-                                    {{substr($item['description'], 0, 55)}}
+                                    {{substr($item->description, 0, 55)}}
                                 </p>
                                 <p class="text-gray-600 text-xs">Last
-                                    updated {{ \Carbon\Carbon::parse($item['updated_at'])->diffForHumans() }} </p>
+                                    updated {{ $item->updated_at->diffForHumans() }} </p>
                             </div>
                         </div>
                     </div>

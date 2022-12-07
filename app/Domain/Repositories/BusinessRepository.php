@@ -3,40 +3,44 @@
 
 namespace App\Domain\Repositories;
 
-use App\Domain\Interfaces\RepositoryInterface;
+
 use App\Models\Business;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 
 class BusinessRepository implements RepositoryInterface
 {
-    public function mainQuery()
+    public function mainQuery(): Builder
     {
-        return Business::withCount('ratings')
-            ->withAvg('ratings','rating')
-            ->with('ratings')
-            ->get();
-
-}
+        return Business::select(['id', 'title', 'user_id','created_at','updated_at', 'description', 'image_url'])
+            ->withCount('ratings')
+            ->withAvg('ratings', 'rating')
+            ->with('ratings');
+    }
 
 
     public function getOne($id)
     {
-        return $this->mainQuery()->where('id', $id)->first();
+        return  $this->mainQuery()
+            ->where('id', $id)
+            ->selectVisibleData($id)
+            ->firstOrFail();
     }
 
-    public function getAll()
+    public function getAll(): Collection
     {
-        return $this->mainQuery();
+        return $this->mainQuery()->get();
     }
 
-    public function getAllByUser($user_id)
+    public function getAllByUser($user_id): Collection
     {
-        return $this->mainQuery()->where('user_id', $user_id);
+        return $this->mainQuery()->where('user_id', $user_id)->get();
     }
 
-    public function getAllBy($orderBy = 'rating_avg_rating')
+    public function getAllBy($orderBy = 'created_at'): Collection
     {
-        return $this->mainQuery()->sortByDesc($orderBy);
+        return $this->mainQuery()->get()->sortByDesc($orderBy);
     }
 
 

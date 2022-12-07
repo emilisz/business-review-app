@@ -16,8 +16,11 @@ class StoreBusinessRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => ['required','string', 'max:255'],
-            'description' => ['required']
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['required'],
+            'phone' => ['nullable','string', 'max:20'],
+            'address' => ['nullable','string', 'max:255'],
+            'employees' => ['nullable','numeric']
         ];
     }
 }

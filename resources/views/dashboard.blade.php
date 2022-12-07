@@ -19,21 +19,37 @@
                     <th>#</th>
                     <th>Title</th>
                     <th>Created</th>
-                    <th>Action</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($businesses as $item)
                     <tr class="mx-auto text-center">
                         <td>{{$loop->iteration}}.</td>
-                        <td><a href="{{route('business.show', ['business' => $item['id']])}}">{{$item['title']}}</a>
+                        <td>
+                            <a class="font-bold underline"
+                               href="{{route('business.show', ['business' => $item['id']])}}">{{$item['title']}}
+                                ({{$item->ratings_count}})</a>
                         </td>
-                        <td>{{$item['updated_at']->diffForHumans()}}</td>
+                        <td>{{$item['created_at']->diffForHumans()}}</td>
                         <td>
                             <x-button-link @class([
                             'bg-amber-500']) :href="route('business.edit', ['business' => $item['id']])">
                             {{ __('Edit') }}
                             </x-button-link>
+                        </td>
+                        <td>
+                            @can('business-delete', $item)
+                                <form action="{{route('business.delete', ['business' => $item['id']])}}" method="POST">
+                                    @method('delete')
+                                    @csrf
+                                    <x-primary-button @class([
+                                    'bg-red-700']) @class(['w-32 justify-center'])>
+                                    {{ __('Delete') }}
+                                    </x-primary-button>
+                                </form>
+                            @endcan
                         </td>
                     </tr>
                 @endforeach
@@ -41,7 +57,7 @@
             </table>
 
 
-            <h5 class="text-lg font-bold my-3">My ratings:)</h5>
+            <h5 class="text-lg font-bold my-3">My ratings:</h5>
             <table class="w-full shadow rounded-lg  p-5">
                 <thead>
                 <tr class="border border-2 bg-gray-400">
@@ -56,13 +72,16 @@
                 @foreach($ratings as $item)
                     <tr class="mx-auto text-center">
                         <td>{{$loop->iteration}}.</td>
-                        <td><a href="{{route('business.show', ['business' => $item['business']])}}">{{$item['business']['title']}}</a>
+                        <td>
+                            <a href="{{route('business.show', ['business' => $item['business']])}}">{{$item['business']['title']}}</a>
                         </td>
                         <td>{{$item['created_at']->diffForHumans()}}</td>
                         <td>{{$item['rating']}}</td>
                         <td>
                             @can('rating-delete', $item)
-                                <form action="{{route('rating.delete', ['business' => $item['business'], 'rating' => $item])}}" method="POST">
+                                <form
+                                    action="{{route('rating.delete', ['business' => $item['business'], 'rating' => $item])}}"
+                                    method="POST">
                                     @method('delete')
                                     @csrf
                                     <x-primary-button @class([
@@ -76,10 +95,34 @@
                 @endforeach
                 </tbody>
             </table>
-            <div class="py-2 px-3">
-{{--                {{Paginator::setPageName('page_a')}}--}}
-                {{ $ratings->links() }}
-            </div>
+
+
+            <h5 class="text-lg font-bold my-3">My payments:</h5>
+            <table class="w-full shadow rounded-lg  p-5">
+                <thead>
+                <tr class="border border-2 bg-gray-400">
+                    <th>#</th>
+                    <th>Created</th>
+                    <th>Valid_till</th>
+                    <th>Method</th>
+                    <th>Amount paid</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($payments as $item)
+                    <tr class="mx-auto text-center">
+                        <td>{{$loop->iteration}}.</td>
+                        <td>
+                            {{$item->created_at}}
+                        </td>
+                        <td>{{$item->valid_till}}</td>
+                        <td>{{$item->payment_method}}</td>
+                        <td> {{$item->amount}} &euro;
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
 
         </div>
     </div>

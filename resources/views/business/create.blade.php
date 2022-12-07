@@ -17,6 +17,15 @@
                         <x-input-label for="description">Description</x-input-label>
                         <x-textarea-input placeholder="..."  name="description" @class(['px-3 py-2']) :error="$errors->has('description')" >{{old('description')}}</x-textarea-input>
 
+                        <x-input-label for="phone">Phone</x-input-label>
+                        <x-text-input placeholder="..."  name="phone" @class(['px-3 py-2']) :error="$errors->has('phone')" >{{old('phone')}}</x-text-input>
+
+                        <x-input-label for="address">Address</x-input-label>
+                        <x-textarea-input placeholder="..."  name="address" @class(['px-3 py-2']) :error="$errors->has('address')" >{{old('address')}}</x-textarea-input>
+
+                        <x-input-label for="employees">Employees</x-input-label>
+                        <x-text-input placeholder="..."  name="employees" @class(['px-3 py-2']) :error="$errors->has('employees')" >{{old('employees')}}</x-text-input>
+
                         <div class="flex justify-end flex-row gap-3">
                             <x-button-link @class(['bg-gray-500  border-black shadow']) :href="url()->previous()">
                             {{ __('Back') }}

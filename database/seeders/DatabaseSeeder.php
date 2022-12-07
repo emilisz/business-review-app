@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Business;
+use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -21,7 +22,7 @@ class DatabaseSeeder extends Seeder
 //        \App\Models\Rating::factory(100)->create();
 
         Business::factory()
-            ->count(20)
+            ->count(200)
             ->hasRatings(1)
             ->create();
 
@@ -29,5 +30,9 @@ class DatabaseSeeder extends Seeder
              'name' => 'test',
              'email' => 'test@test.com',
          ]);
+
+        Payment::factory()
+            ->count(20)
+            ->create();
     }
 }

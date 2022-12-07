@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Business extends Model
 {
     use HasFactory;
-    protected $fillable = ['title','description', 'user_id', 'image_url'];
+
+    protected $table = 'businesses';
+    protected $fillable = ['title', 'description', 'user_id', 'image_url', 'phone', 'address', 'employees'];
 
     public function user()
     {
@@ -22,7 +24,22 @@ class Business extends Model
 
     public function createNew($data)
     {
-       return auth()->user()->businesses()->create($data);
-//        dd($data);
+        return self::create([
+            ...$data,
+            ...['user_id' => auth()->id()]
+        ]);
     }
+
+
+    public function scopeSelectVisibleData($q, $businessId)
+    {
+            if (auth()->check() && (auth()->user()->isPremium() || auth()->user()->isOwner($businessId))) {
+            return $q->addSelect('phone', 'address', 'employees');
+        }
+        return $q;
+    }
+
+
+
+
 }
