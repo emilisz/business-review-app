@@ -4,11 +4,14 @@
 namespace App\Domain\Repositories;
 
 
+use App\Domain\Repositories\Interfaces\BaseInterface;
 use App\Models\Payment;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
-class PaymentRepository implements RepositoryInterface
+class PaymentRepository implements BaseInterface
 {
 
     public function mainQuery(): Builder
@@ -17,7 +20,7 @@ class PaymentRepository implements RepositoryInterface
 
     }
 
-    public function getOne($id)
+    public function getOne($id): Model
     {
         return $this->mainQuery()->firstOrFail($id);
     }
@@ -27,18 +30,20 @@ class PaymentRepository implements RepositoryInterface
         return $this->mainQuery()->get();
     }
 
-    public function getAllByUser($user_id): Collection
+    public function getAllByUser($user_id, $paginateBy = 10): LengthAwarePaginator
     {
-        return $this->mainQuery()->where('user_id', $user_id)->get();
-    }
-
-    public function getAllBy($orderBy): Collection
-    {
-        return $this->mainQuery()->get()->sortByDesc($orderBy);
+        return $this->mainQuery()
+            ->where('user_id', $user_id)
+            ->paginate($paginateBy,['*'],'payments');
     }
 
     public function isValid($user_id): Collection
     {
         return $this->mainQuery()->get()->where('user_id', $user_id)->where('valid_till', '>', now());
+    }
+
+    public function delete($id): void
+    {
+        Payment::destroy($id);
     }
 }

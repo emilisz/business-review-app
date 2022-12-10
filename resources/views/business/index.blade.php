@@ -31,7 +31,7 @@
                 </x-slot>
                 <x-slot name="content">
                     <x-dropdown-link :href="route('order', 'ratings_avg_rating')">
-                        {{ __('Popular first') }}
+                        {{ __('Ratings (avg rating)') }}
                     </x-dropdown-link>
 
                     <x-dropdown-link :href="route('order', 'updated_at')">

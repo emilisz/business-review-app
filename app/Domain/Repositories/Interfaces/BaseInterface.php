@@ -1,13 +1,13 @@
 <?php
 
 
-namespace App\Domain\Repositories;
+namespace App\Domain\Repositories\Interfaces;
 
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
-interface RepositoryInterface
+interface BaseInterface
 {
     public function mainQuery(): Builder;
 
@@ -15,7 +15,7 @@ interface RepositoryInterface
 
     public function getAll(): Collection;
 
-    public function getAllByUser($user_id): Collection;
+    public function getAllByUser($user_id, $paginateBy);
 
-    public function getAllBy($orderBy): Collection;
+    public function delete($id): void;
 }

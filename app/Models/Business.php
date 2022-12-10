@@ -22,13 +22,13 @@ class Business extends Model
         return $this->hasMany(Rating::class);
     }
 
-    public function createNew($data)
-    {
-        return self::create([
-            ...$data,
-            ...['user_id' => auth()->id()]
-        ]);
-    }
+//    public function createNew($data)
+//    {
+//        return self::create([
+//            ...$data,
+//            ...['user_id' => auth()->id()]
+//        ]);
+//    }
 
 
     public function scopeSelectVisibleData($q, $businessId)

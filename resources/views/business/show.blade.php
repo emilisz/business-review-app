@@ -1,7 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-{{--            {{dd($business)}}--}}
             {{ $business->title }}
             <p class="text-gray-400 flex flex-row gap-2">{{str_repeat("⭐", round($business->ratings_avg_rating))}}
                 ({{round($business->ratings_count)}})</p>
@@ -114,7 +113,7 @@
                                 <p>{{$rating->created_at->diffForHumans()}}</p>
                                 @can('rating-delete', $rating)
                                     <form
-                                        action="{{route('rating.delete',['business' => $business, 'rating'=> $rating])}}"
+                                        action="{{route('rating.delete',['rating'=> $rating])}}"
                                         method="POST">
                                         @method('delete')
                                         @csrf

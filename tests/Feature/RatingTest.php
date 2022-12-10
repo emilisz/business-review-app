@@ -17,18 +17,10 @@ class RatingTest extends TestCase
 
     public function testAuthUserCanPostRatings(): void
     {
-        $this->logIn();
+        $rating = Rating::factory()->create();
 
-        $business = Business::factory()->create(['user_id' => auth()->id()]);
-        $rating = [
-            'rating' => $this->faker->numberBetween(1,5),
-            'comment' => $this->faker->sentence,
-            'business_id' => $business->id,
-            'user_id' => auth()->id()
-        ];
-
-        $this->post(route('rating.store',$business), $rating);
-        $this->get(route('business.show', $business))->assertSee($rating['comment']);
+        $this->logIn()->post(route('rating.store',$rating->business, $rating));
+        $this->get(route('business.show', $rating->business))->assertSee($rating->comment);
     }
 
     public function testRatingBelongsToBusiness(): void

@@ -29,19 +29,19 @@
                         <td>{{$loop->iteration}}.</td>
                         <td>
                             <a class="font-bold underline"
-                               href="{{route('business.show', ['business' => $item['id']])}}">{{$item['title']}}
+                               href="{{route('business.show', ['business' => $item->id])}}">{{$item->title}}
                                 ({{$item->ratings_count}})</a>
                         </td>
-                        <td>{{$item['created_at']->diffForHumans()}}</td>
+                        <td>{{$item->created_at->diffForHumans()}}</td>
                         <td>
                             <x-button-link @class([
-                            'bg-amber-500']) :href="route('business.edit', ['business' => $item['id']])">
+                            'bg-amber-500']) :href="route('business.edit', ['business' => $item->id])">
                             {{ __('Edit') }}
                             </x-button-link>
                         </td>
                         <td>
                             @can('business-delete', $item)
-                                <form action="{{route('business.delete', ['business' => $item['id']])}}" method="POST">
+                                <form action="{{route('business.delete', ['business' => $item->id])}}" method="POST">
                                     @method('delete')
                                     @csrf
                                     <x-primary-button @class([
@@ -55,6 +55,10 @@
                 @endforeach
                 </tbody>
             </table>
+
+            <div class="py-3">
+                {{ $businesses->links() }}
+            </div>
 
 
             <h5 class="text-lg font-bold my-3">My ratings:</h5>
@@ -73,14 +77,14 @@
                     <tr class="mx-auto text-center">
                         <td>{{$loop->iteration}}.</td>
                         <td>
-                            <a href="{{route('business.show', ['business' => $item['business']])}}">{{$item['business']['title']}}</a>
+                            <a class="font-bold underline" href="{{route('business.show', ['business' => $item->business])}}">{{$item->business->title}}</a>
                         </td>
-                        <td>{{$item['created_at']->diffForHumans()}}</td>
-                        <td>{{$item['rating']}}</td>
+                        <td>{{$item->created_at->diffForHumans()}}</td>
+                        <td>{{$item->rating}}</td>
                         <td>
                             @can('rating-delete', $item)
                                 <form
-                                    action="{{route('rating.delete', ['business' => $item['business'], 'rating' => $item])}}"
+                                    action="{{route('rating.delete', ['rating' => $item])}}"
                                     method="POST">
                                     @method('delete')
                                     @csrf
@@ -95,6 +99,10 @@
                 @endforeach
                 </tbody>
             </table>
+
+            <div class="py-3">
+                {{ $ratings->links() }}
+            </div>
 
 
             <h5 class="text-lg font-bold my-3">My payments:</h5>
@@ -123,6 +131,10 @@
                 @endforeach
                 </tbody>
             </table>
+
+            <div class="py-3">
+                {{ $payments->links() }}
+            </div>
 
         </div>
     </div>

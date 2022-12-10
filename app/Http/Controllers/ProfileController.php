@@ -20,12 +20,16 @@ class ProfileController extends Controller
     public function dashboard()
     {
         $userId = auth()->id();
-        $businesses = (new BusinessRepository)->getAllByUser($userId);
-        $ratings =    (new RatingRepository)->getAllByUser($userId);
-        $payments = (new PaymentRepository())->getAllByUser($userId);
+
+        $businesses = (new BusinessRepository)->getAllByUser($userId, config('constants.pagination_number.profile.businesses'));
+        $ratings =    (new RatingRepository)->getAllByUser($userId, config('constants.pagination_number.profile.ratings'));
+        $payments = (new PaymentRepository())->getAllByUser($userId, config('constants.pagination_number.profile.payments'));
 
         return view('dashboard', compact('businesses', 'ratings', 'payments'));
     }
+
+
+
     /**
      * Display the user's profile form.
      *

@@ -4,11 +4,16 @@
 namespace App\Domain\Repositories;
 
 
+use App\Domain\Repositories\Interfaces\BaseInterface;
+use App\Domain\Repositories\Interfaces\RatingRepositoryInterface;
+use App\Models\Business;
 use App\Models\Rating;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
-class RatingRepository implements RepositoryInterface
+class RatingRepository implements RatingRepositoryInterface
 {
 
     public function mainQuery(): Builder
@@ -16,7 +21,7 @@ class RatingRepository implements RepositoryInterface
         return Rating::with('business', 'user');
     }
 
-    public function getOne($id)
+    public function getOne($id): Model
     {
         return $this->mainQuery()->where('id', $id)->first();
     }
@@ -26,13 +31,23 @@ class RatingRepository implements RepositoryInterface
         return $this->mainQuery()->get();
     }
 
-    public function getAllByUser($user_id): Collection
+    public function getAllByUser($user_id, $paginateBy = 10): LengthAwarePaginator
     {
-        return $this->mainQuery()->where('user_id', $user_id)->get();
+        return $this->mainQuery()
+            ->where('user_id', $user_id)
+            ->paginate($paginateBy,['*'],'ratings');
     }
 
-    public function getAllBy($orderBy = 'avg_rating'): Collection
+    public function createNew($businessId, $data)
     {
-        return $this->mainQuery()->get()->sortByDesc($orderBy);
+        return Rating::create([
+            ...$data,
+            ...['business_id' =>  $businessId, 'user_id' => auth()->id()]
+        ]);
+    }
+
+    public function delete($id): void
+    {
+        Rating::destroy($id);
     }
 }

@@ -42,7 +42,7 @@ Route::controller(BusinessController::class)->group(function () {
 
 Route::middleware('auth')->controller(RatingController::class)->group(function () {
     Route::post('/businesses/{business}/ratings', 'store')->name('rating.store');
-    Route::delete('/businesses/{business}/ratings/{rating}', 'delete')->name('rating.delete');
+    Route::delete('/ratings/{rating}', 'delete')->name('rating.delete');
 });
 
 Route::middleware('auth')->controller(PaymentController::class)->group(function () {
@@ -53,7 +53,7 @@ Route::middleware('auth')->controller(PaymentController::class)->group(function 
 
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard');
+    Route::get('/profile/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
