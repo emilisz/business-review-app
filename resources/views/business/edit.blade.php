@@ -22,7 +22,7 @@
                         <x-text-input placeholder="..."  name="phone" value="{{ $business->phone }}" @class(['px-3 py-2']) :error="$errors->has('phone')" ></x-text-input>
 
                         <x-input-label for="address">Address</x-input-label>
-                        <x-textarea-input placeholder="..."  name="address" value="{{ $business->address }}" @class(['px-3 py-2']) :error="$errors->has('address')" ></x-textarea-input>
+                        <x-textarea-input placeholder="..."  name="address"  @class(['px-3 py-2']) :error="$errors->has('address')" >{{ $business->address }}</x-textarea-input>
 
                         <x-input-label for="employees">Employees</x-input-label>
                         <x-text-input placeholder="..."  name="employees" value="{{ $business->employees }}" @class(['px-3 py-2']) :error="$errors->has('employees')" ></x-text-input>

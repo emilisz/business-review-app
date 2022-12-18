@@ -26,8 +26,8 @@
 
 ### Instruction
 - Clone project
-- Create .env file with corresponding values
-- Write in terminal: 
+- Create .env file with corresponding values from .env.example
+- Run in terminal: 
 ```
 $ composer install
 $ npm install
@@ -39,6 +39,12 @@ $ npm run dev
 - Run tests:
 ```
 $ php artisan test
+```
+
+- cli commands:
+```
+$ php artisan user:create {number=1}
+$ php artisan business:create {number=1}
 ```
 
 

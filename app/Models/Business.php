@@ -19,27 +19,17 @@ class Business extends Model
 
     public function ratings()
     {
-        return $this->hasMany(Rating::class);
+        return $this->hasMany(Rating::class)->orderByDesc('created_at');
     }
-
-//    public function createNew($data)
-//    {
-//        return self::create([
-//            ...$data,
-//            ...['user_id' => auth()->id()]
-//        ]);
-//    }
 
 
     public function scopeSelectVisibleData($q, $businessId)
     {
-            if (auth()->check() && (auth()->user()->isPremium() || auth()->user()->isOwner($businessId))) {
+        if (auth()->check() && (auth()->user()->isPremium() || auth()->user()->isOwner($businessId))) {
             return $q->addSelect('phone', 'address', 'employees');
         }
         return $q;
     }
-
-
 
 
 }

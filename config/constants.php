@@ -2,8 +2,8 @@
 
 return [
     'payment_providers' => [
-        'stripe',
-        'paypal'
+        'paypal',
+        'stripe'
     ],
     'pagination_number' => [
         'default' => 10,

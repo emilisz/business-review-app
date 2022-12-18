@@ -19,15 +19,15 @@ class BusinessRepository implements BusinessRepositoryInterface
         return Business::select(['id', 'title', 'user_id', 'created_at', 'updated_at', 'description', 'image_url'])
             ->withCount('ratings')
             ->withAvg('ratings', 'rating')
-            ->with('ratings');
+            ->with(['ratings']);
     }
 
 
-    public function getOne($id): Model
+    public function getOne($modelId): Model
     {
         return $this->mainQuery()
-            ->where('id', $id)
-            ->selectVisibleData($id)
+            ->where('id', $modelId)
+            ->selectVisibleData($modelId)
             ->firstOrFail();
     }
 
@@ -56,9 +56,15 @@ class BusinessRepository implements BusinessRepositoryInterface
         ]);
     }
 
-
-    public function delete($id): void
+    public function update($modelId, $data): void
     {
-        Business::destroy($id);
+        $model = Business::findOrFail($modelId);
+        $model->update($data);
+    }
+
+
+    public function delete($modelId): void
+    {
+        Business::destroy($modelId);
     }
 }

@@ -58,7 +58,7 @@ class User extends Authenticatable
 
     public function payments(): HasMany
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(Payment::class)->orderByDesc('created_at');
     }
 
     public function isPremium():bool

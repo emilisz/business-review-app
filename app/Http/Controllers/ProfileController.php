@@ -28,8 +28,6 @@ class ProfileController extends Controller
         return view('dashboard', compact('businesses', 'ratings', 'payments'));
     }
 
-
-
     /**
      * Display the user's profile form.
      *

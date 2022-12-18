@@ -16,22 +16,11 @@ class PaymentProvider
     {
     }
 
-//    public function pay()
-//    {
-//        $latestPayment = $this->repository->getAllByUser(auth()->id())->last();
-//
-//        if ($latestPayment){
-//            return $this->payment->pay($latestPayment->valid_till);
-//        }
-//       return $this->payment->pay();
-//    }
-
-
     public function pay()
     {
         $latestPayment = $this->repository->getAllByUser(auth()->id())->last();
 
-        if ($latestPayment){
+        if ($latestPayment) {
             return $this->payment->pay($latestPayment->valid_till);
         }
         return $this->payment->pay();

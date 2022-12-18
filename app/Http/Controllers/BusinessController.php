@@ -44,7 +44,6 @@ class BusinessController extends Controller
     public function store(StoreBusinessRequest $request): RedirectResponse
     {
         $this->repository->createNew($request->validated());
-//        (new Business)->createNew($request->validated());
 
         return redirect()->route('home')->with('status', "Saved!");
     }
@@ -52,14 +51,14 @@ class BusinessController extends Controller
     public function show(Business $business): View
     {
         $business = $this->repository->getOne($business->id);
+        $ratings = $business->ratings()->paginate(config('constants.pagination_number.default'));
 
-        return view('business.show', compact('business'));
+        return view('business.show', compact('business', 'ratings'));
     }
 
     public function edit(Business $business): View
     {
         Gate::authorize('business-update', $business);
-
         $business = $this->repository->getOne($business->id);
 
         return view('business.edit', compact('business'));
@@ -67,16 +66,13 @@ class BusinessController extends Controller
 
     public function update(Business $business, UpdateBusinessRequest $request): RedirectResponse
     {
-        $business = $this->repository->getOne($business->id);
-        $business->update($request->validated());
-
+        $this->repository->update($business->id, $request->validated());
         return redirect()->route('business.show', $business)->with('status', "Updated!");
     }
 
     public function delete(Business $business): RedirectResponse
     {
         Gate::authorize('business-delete', $business);
-
         $this->repository->delete($business->id);
 
         return redirect()->route('dashboard')->with('status', "Deleted!");

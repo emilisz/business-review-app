@@ -103,7 +103,7 @@
             </div>
 
             <div class="flex flex-col gap-2">
-                @foreach($business->ratings as $rating)
+                @foreach($ratings as $rating)
                     <div class="rounded shadow border p-3 text-gray-400 relative">
                         <p class="">- {{$rating->user ? $rating->user->name : 'unknown'}}</p>
                         <p class="text-gray-600">{{$rating->comment}}</p>
@@ -128,6 +128,10 @@
                         </div>
                     </div>
                 @endforeach
+            </div>
+
+            <div class="py-3">
+                {{$ratings->links()}}
             </div>
 
         </div>

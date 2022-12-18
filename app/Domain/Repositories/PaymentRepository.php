@@ -37,13 +37,20 @@ class PaymentRepository implements BaseInterface
             ->paginate($paginateBy,['*'],'payments');
     }
 
+    public function update($modelId, $data): void
+    {
+        $model = Payment::findOrFail($modelId);
+        $model->update($data);
+    }
+
+    public function delete($modelId): void
+    {
+        Payment::destroy($modelId);
+    }
+
+
     public function isValid($user_id): Collection
     {
         return $this->mainQuery()->get()->where('user_id', $user_id)->where('valid_till', '>', now());
-    }
-
-    public function delete($id): void
-    {
-        Payment::destroy($id);
     }
 }

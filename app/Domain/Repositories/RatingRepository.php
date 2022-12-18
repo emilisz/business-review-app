@@ -46,8 +46,14 @@ class RatingRepository implements RatingRepositoryInterface
         ]);
     }
 
-    public function delete($id): void
+    public function update($modelId, $data): void
     {
-        Rating::destroy($id);
+        $model = Rating::findOrFail($modelId);
+        $model->update($data);
+    }
+
+    public function delete($modelId): void
+    {
+        Rating::destroy($modelId);
     }
 }

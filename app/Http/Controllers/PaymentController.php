@@ -32,7 +32,7 @@ class PaymentController extends Controller
 
     public function store(StorePaymentRequest $request): RedirectResponse
     {
-        $payment = (new PaymentService)->makePayment($request->validated());
+        $payment = (new PaymentService)->selectProvider($request->validated());
 
         return redirect()
             ->route('dashboard')
