@@ -4,14 +4,13 @@
 namespace App\Domain\Repositories;
 
 
-use App\Domain\Repositories\Interfaces\BaseInterface;
+use App\Domain\Repositories\Interfaces\PaymentRepositoryInterface;
 use App\Models\Payment;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-class PaymentRepository implements BaseInterface
+class PaymentRepository implements PaymentRepositoryInterface
 {
 
     public function mainQuery(): Builder
@@ -20,9 +19,9 @@ class PaymentRepository implements BaseInterface
 
     }
 
-    public function getOne($id): Model
+    public function getOne($modelId): Model
     {
-        return $this->mainQuery()->firstOrFail($id);
+        return $this->mainQuery()->firstOrFail($modelId);
     }
 
     public function getAll(): Collection
@@ -30,11 +29,9 @@ class PaymentRepository implements BaseInterface
         return $this->mainQuery()->get();
     }
 
-    public function getAllByUser($user_id, $paginateBy = 10): LengthAwarePaginator
+    public function getAllByUser($user_id): Builder
     {
-        return $this->mainQuery()
-            ->where('user_id', $user_id)
-            ->paginate($paginateBy,['*'],'payments');
+        return $this->mainQuery()->where('user_id', $user_id);
     }
 
     public function update($modelId, $data): void
@@ -45,12 +42,14 @@ class PaymentRepository implements BaseInterface
 
     public function delete($modelId): void
     {
-        Payment::destroy($modelId);
+        $model = Payment::findOrFail($modelId);
+        $model->delete();
     }
 
 
-    public function isValid($user_id): Collection
+    public function findAllNotExpired($user_id): Collection
     {
-        return $this->mainQuery()->get()->where('user_id', $user_id)->where('valid_till', '>', now());
+        return $this->getAllByUser($user_id)->get()->where('valid_till', '>', now());
     }
+
 }

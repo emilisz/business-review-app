@@ -4,11 +4,8 @@
 namespace App\Domain\Repositories;
 
 
-use App\Domain\Repositories\Interfaces\BaseInterface;
 use App\Domain\Repositories\Interfaces\RatingRepositoryInterface;
-use App\Models\Business;
 use App\Models\Rating;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -21,9 +18,9 @@ class RatingRepository implements RatingRepositoryInterface
         return Rating::with('business', 'user');
     }
 
-    public function getOne($id): Model
+    public function getOne($modelId): Model
     {
-        return $this->mainQuery()->where('id', $id)->first();
+        return $this->mainQuery()->where('id', $modelId)->first();
     }
 
     public function getAll(): Collection
@@ -31,11 +28,9 @@ class RatingRepository implements RatingRepositoryInterface
         return $this->mainQuery()->get();
     }
 
-    public function getAllByUser($user_id, $paginateBy = 10): LengthAwarePaginator
+    public function getAllByUser($user_id): Builder
     {
-        return $this->mainQuery()
-            ->where('user_id', $user_id)
-            ->paginate($paginateBy,['*'],'ratings');
+        return $this->mainQuery()->where('user_id', $user_id);
     }
 
     public function createNew($businessId, $data)
@@ -54,6 +49,7 @@ class RatingRepository implements RatingRepositoryInterface
 
     public function delete($modelId): void
     {
-        Rating::destroy($modelId);
+        $model = Rating::findOrFail($modelId);
+        $model->delete();
     }
 }

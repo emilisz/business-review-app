@@ -71,62 +71,16 @@
             @endcan
         </div>
 
-        {{-- Comments start--}}
+
         <div class="max-w-7xl mx-auto my-6 flex flex-col gap-2">
             <div class="p-3">
                 <h2 class="text-lg">Comments</h2>
-                @auth
-                    <form action="{{route('rating.store', ['business' => $business->id])}}" method="POST">
-                        @csrf
-                        <div class="w-full flex flex-col gap-3">
-                            <x-input-label for="comment">Comment</x-input-label>
-                            <x-textarea-input placeholder="write comment as {{Auth::user()->name}}.." name="comment"
-                                              @class([
-                            'px-3 py-2']) :error="$errors->has('comment')" >{{old('comment')}}</x-textarea-input>
-                            <x-input-label for="rating">Rating</x-input-label>
-                            <select name="rating" id="rating">
-                                @for($i=1; $i<=5;$i++)
-                                    <option value="{{$i}}">{{$i}}</option>
-                                @endfor
-                            </select>
-                            <x-primary-button @class([
-                            'w-32 justify-center bg-green-600 border-black shadow'])>
-                            {{ __('Send') }}
-                            </x-primary-button>
-                        </div>
-                    </form>
-                @endauth
-                @guest
-                    <p>To write comments and rate please <a class="underline text-sky-700" href="{{route('login')}}">Log
-                            in </a>first </p>
-                @endguest
+                @include('business.partials.create-comment-form')
             </div>
 
             <div class="flex flex-col gap-2">
                 @foreach($ratings as $rating)
-                    <div class="rounded shadow border p-3 text-gray-400 relative">
-                        <p class="">- {{$rating->user ? $rating->user->name : 'unknown'}}</p>
-                        <p class="text-gray-600">{{$rating->comment}}</p>
-                        <div class="flex justify-between">
-                            <p class="text-gray-400">{{round($rating->rating)}}{{str_repeat("⭐", round($rating->rating))}} </p>
-                            <div class="flex flex-row gap-2">
-                                <p>{{$rating->created_at->diffForHumans()}}</p>
-                                @can('rating-delete', $rating)
-                                    <form
-                                        action="{{route('rating.delete',['rating'=> $rating])}}"
-                                        method="POST">
-                                        @method('delete')
-                                        @csrf
-                                        <x-primary-button @class([
-                                        'bg-red-700 w-6 justify-center'])>
-                                        x
-                                        </x-primary-button>
-                                    </form>
-                                @endcan
-                            </div>
-
-                        </div>
-                    </div>
+                    @include('business.partials.comment')
                 @endforeach
             </div>
 
@@ -135,7 +89,7 @@
             </div>
 
         </div>
-        {{-- Comments end--}}
+
     </div>
 </x-app-layout>
 

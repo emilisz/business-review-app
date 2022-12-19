@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Domain\Interfaces\RepositoryInterface;
+
 use App\Domain\Repositories\PaymentRepository;
-use App\Domain\Repositories\RatingRepository;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -63,7 +61,7 @@ class User extends Authenticatable
 
     public function isPremium():bool
     {
-        return count((new PaymentRepository())->isValid(auth()->id())) > 0;
+        return count((new PaymentRepository())->findAllNotExpired(auth()->id())) > 0;
     }
 
     public  function isOwner($businessId)

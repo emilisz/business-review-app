@@ -22,7 +22,7 @@ class BusinessController extends Controller
     {
         $businesses = $this->repository
             ->getAll()
-            ->paginate(config('constants.pagination_number.default'));
+            ->paginate(config('constants.paginate_by.default'));
 
         return view('business.index', compact('businesses'));
     }
@@ -31,12 +31,12 @@ class BusinessController extends Controller
     {
         $businesses = $this->repository
             ->getAllBy($order)
-            ->paginate(config('constants.pagination_number.default'));
+            ->paginate(config('constants.paginate_by.default'));
 
         return view('business.index', compact('businesses'));
     }
 
-    public function create()
+    public function create(): View
     {
         return view('business.create');
     }
@@ -51,7 +51,7 @@ class BusinessController extends Controller
     public function show(Business $business): View
     {
         $business = $this->repository->getOne($business->id);
-        $ratings = $business->ratings()->paginate(config('constants.pagination_number.default'));
+        $ratings = $business->ratings()->paginate(config('constants.paginate_by.default'));
 
         return view('business.show', compact('business', 'ratings'));
     }

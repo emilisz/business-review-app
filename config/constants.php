@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'pagination_number' => [
+    'paginate_by' => [
         'default' => 10,
         'profile' => [
             'businesses' => 3,

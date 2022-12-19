@@ -6,7 +6,6 @@ namespace App\Domain\Repositories;
 
 use App\Domain\Repositories\Interfaces\BusinessRepositoryInterface;
 use App\Models\Business;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -36,11 +35,9 @@ class BusinessRepository implements BusinessRepositoryInterface
         return $this->mainQuery()->get();
     }
 
-    public function getAllByUser($user_id, $paginateBy = 10): LengthAwarePaginator
+    public function getAllByUser($user_id): Builder
     {
-        return $this->mainQuery()
-            ->where('user_id', $user_id)
-            ->paginate($paginateBy,['*'],'businesses');
+        return $this->mainQuery()->where('user_id', $user_id);
     }
 
     public function getAllBy($orderBy = 'created_at'): Collection
@@ -65,6 +62,7 @@ class BusinessRepository implements BusinessRepositoryInterface
 
     public function delete($modelId): void
     {
-        Business::destroy($modelId);
+        $model = Business::findOrFail($modelId);
+        $model->delete();
     }
 }

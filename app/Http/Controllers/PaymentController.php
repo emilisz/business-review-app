@@ -20,7 +20,7 @@ class PaymentController extends Controller
 
     public function index(): View
     {
-        $latestPayment = (new PaymentRepository)->getAllByUser(auth()->id())->last();
+        $latestPayment = (new PaymentRepository)->getAllByUser(auth()->id())->latest()->first();
         $paymentProviders = (new PaymentProviderRegistry)->getGateways();
 
         return view('payments.payment')
@@ -40,7 +40,7 @@ class PaymentController extends Controller
 
         return redirect()
             ->route('dashboard')
-            ->with('status', 'Payment with ' . $payment->payment_method . ' saved. And is valid till ' . $payment->valid_till->diffForHumans());
+            ->with('status', 'Payment with ' . $payment->payment_method . ' saved. And is valid till ' . $payment->valid_till);
     }
 
     public function delete(Payment $payment): RedirectResponse
