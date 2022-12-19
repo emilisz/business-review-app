@@ -24,8 +24,9 @@ class ProfileController extends Controller
         $businesses = (new BusinessRepository)->getAllByUser($userId, config('constants.pagination_number.profile.businesses'));
         $ratings =    (new RatingRepository)->getAllByUser($userId, config('constants.pagination_number.profile.ratings'));
         $payments = (new PaymentRepository())->getAllByUser($userId, config('constants.pagination_number.profile.payments'));
+        $latestPayment = (new PaymentRepository)->getAllByUser(auth()->id())->last();
 
-        return view('dashboard', compact('businesses', 'ratings', 'payments'));
+        return view('dashboard', compact('businesses', 'ratings', 'payments','latestPayment'));
     }
 
     /**

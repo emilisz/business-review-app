@@ -1,19 +1,14 @@
 <?php
 
 return [
-    'payment_providers' => [
-        'paypal',
-        'stripe'
-    ],
     'pagination_number' => [
         'default' => 10,
         'profile' => [
-            'businesses' => 2,
-            'payments' => 2,
-            'ratings' => 2,
+            'businesses' => 3,
+            'payments' => 3,
+            'ratings' => 3,
         ],
     ],
-
     'premium_price' => 5.55,
     'premium_days' => 30,
 ];

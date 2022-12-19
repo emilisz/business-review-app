@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 
-use App\Domain\Payments\PaymentService;
+use App\Domain\Payments\PaymentProvider;
+use App\Domain\Payments\PaymentProviderRegistry;
 use App\Domain\Repositories\Interfaces\BusinessRepositoryInterface;
 use App\Domain\Repositories\PaymentRepository;
 use App\Http\Requests\StorePaymentRequest;
@@ -13,18 +14,20 @@ use Illuminate\Http\RedirectResponse;
 
 class PaymentController extends Controller
 {
-    public function __construct(protected BusinessRepositoryInterface $repository)
+    public function __construct(protected BusinessRepositoryInterface $repository, private PaymentProviderRegistry $registry)
     {
     }
 
     public function index(): View
     {
         $latestPayment = (new PaymentRepository)->getAllByUser(auth()->id())->last();
+        $paymentProviders = (new PaymentProviderRegistry)->getGateways();
+
         return view('payments.payment')
             ->with([
                 'premiumDays' => config('constants.premium_days'),
                 'premiumPrice' => config('constants.premium_price'),
-                'providers' => config('constants.payment_providers'),
+                'providers' => $paymentProviders,
                 'latestPayment' => $latestPayment
             ]);
     }
@@ -32,7 +35,8 @@ class PaymentController extends Controller
 
     public function store(StorePaymentRequest $request): RedirectResponse
     {
-        $payment = (new PaymentService)->selectProvider($request->validated());
+        $paymentClass = $this->registry->get($request->get('payment_method'));
+        $payment = (new PaymentProvider($paymentClass, new PaymentRepository()))->pay();
 
         return redirect()
             ->route('dashboard')

@@ -17,4 +17,5 @@ class Paypal implements PaymentInterface
             'user_id' => auth()->id()
         ]);
     }
+
 }

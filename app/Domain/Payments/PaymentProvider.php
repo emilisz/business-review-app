@@ -20,10 +20,11 @@ class PaymentProvider
     {
         $latestPayment = $this->repository->getAllByUser(auth()->id())->last();
 
-        if ($latestPayment) {
-            return $this->payment->pay($latestPayment->valid_till);
+        if (!$latestPayment) {
+            return $this->payment->pay();
         }
-        return $this->payment->pay();
+        return $this->payment->pay($latestPayment->valid_till);
+
     }
 
 

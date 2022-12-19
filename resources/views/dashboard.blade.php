@@ -10,6 +10,9 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     Welcome back! <span class="font-bold capitalize ">{{Auth::check() ? Auth::user()->name : ''}}</span>
+                    @if($latestPayment)
+                        <p class="text-gray-500 text-sm">Premium is valid till {{$latestPayment->valid_till}}</p>
+                    @endif
                 </div>
             </div>
             <h5 class="text-lg font-bold my-3">My businesses:</h5>

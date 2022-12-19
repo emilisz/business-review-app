@@ -1,5 +1,6 @@
 <?php
 
+use App\Providers\PaymentServiceProvider;
 use App\Providers\RepositoryServiceProvider;
 use Illuminate\Support\Facades\Facade;
 
@@ -200,6 +201,7 @@ return [
          * AppRepositoriesProviders
          */
         RepositoryServiceProvider::class,
+        PaymentServiceProvider::class
 
     ],
 

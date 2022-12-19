@@ -21,14 +21,24 @@ class PaymentTest extends TestCase
         $this->assertDatabaseHas('payments', $attributes);
     }
 
-    public function testUserSelectedMethodDoNotExists(): void
+    /**
+     * @dataProvider paymentMethods
+     */
+    public function testUserSelectedPaymentMethodDoNotExists($name): void
     {
-        $attributes = [
-            'payment_method' => 'dd'
-        ];
+        $this->logIn()->post(route('payment.store', ['payment_method' => $name]))->assertStatus(500);
+        $this->assertDatabaseMissing('payments', ['payment_method' => $name]);
+    }
 
-        $this->logIn()->post(route('payment.store', $attributes))->assertStatus(500);
-        $this->assertDatabaseMissing('payments', $attributes);
+
+    public function paymentMethods(): \Generator
+    {
+        yield "capitalized letter" => [
+            'name' => 'Stripe'
+        ];
+        yield "non existent name" => [
+            'name' => 'paypal5'
+        ];
     }
 
 }
