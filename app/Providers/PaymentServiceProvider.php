@@ -18,7 +18,7 @@ class PaymentServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->app->make(PaymentProviderRegistry::class)
-            ->register("paypal", new Paypal())
-            ->register("stripe", new Stripe());
+            ->register("paypal", new Paypal(config('constants.payments_providers.paypal.api_key')))
+            ->register("stripe", new Stripe(config('constants.payments_providers.stripe.api_key')));
     }
 }
