@@ -9,6 +9,10 @@ use App\Models\Payment;
 
 class Paypal implements PaymentInterface
 {
+    public function __construct (private string $apiKey = '')
+    {
+    }
+
     public function pay($date = null)
     {
         return Payment::create([

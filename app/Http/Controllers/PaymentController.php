@@ -15,14 +15,15 @@ use Illuminate\Http\RedirectResponse;
 
 class PaymentController extends Controller
 {
-    public function __construct(protected BusinessRepositoryInterface $repository, private PaymentProviderRegistry $registry)
+    public function __construct(protected BusinessRepositoryInterface $repository, private PaymentProviderRegistry $providersRegistry)
     {
     }
 
     public function index(): View
     {
         $latestPayment = (new PaymentRepository)->getAllByUser(auth()->id())->latest()->first();
-        $paymentProviders = (new PaymentProviderRegistry)->getGateways();
+        $paymentProviders = array_keys(config('constants.payments_providers'));
+//        dd($paymentProviders);
 
         return view('payments.payment')
             ->with([
@@ -36,7 +37,7 @@ class PaymentController extends Controller
 
     public function store(StorePaymentRequest $request): RedirectResponse
     {
-        $paymentClass = $this->registry->get($request->get('payment_method'));
+        $paymentClass = $this->providersRegistry->find($request->get('payment_method'));
         $payment = (new PaymentProvider($paymentClass, new PaymentRepository()))->pay();
 
         return redirect()

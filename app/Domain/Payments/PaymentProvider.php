@@ -7,10 +7,11 @@ namespace App\Domain\Payments;
 
 use App\Domain\Payments\Providers\PaymentInterface;
 use App\Domain\Repositories\Interfaces\BaseInterface;
+use App\Domain\Repositories\Interfaces\PaymentRepositoryInterface;
 
 class PaymentProvider
 {
-    public function __construct(private PaymentInterface $payment, protected BaseInterface $repository)
+    public function __construct(private PaymentInterface $payment, protected PaymentRepositoryInterface $repository)
     {
     }
 

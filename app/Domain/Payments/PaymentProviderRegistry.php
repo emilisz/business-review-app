@@ -8,13 +8,7 @@ use App\Domain\Payments\Providers\PaymentInterface;
 
 class PaymentProviderRegistry
 {
-    protected array $gateways = ["stripe", "paypal"];
-
-
-    public function getGateways(): array
-    {
-        return $this->gateways;
-    }
+    protected array $gateways = [];
 
     public function register($name, PaymentInterface $instance): static
     {
@@ -22,7 +16,7 @@ class PaymentProviderRegistry
         return $this;
     }
 
-    public function get($name)
+    public function find($name)
     {
         if (array_key_exists($name, $this->gateways)) {
             return $this->gateways[$name];

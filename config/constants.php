@@ -11,5 +11,10 @@ return [
     ],
     'premium_price' => 5.55,
     'premium_days' => 30,
+    'payments_providers' => [
+        'paypal' => ['name' => 'paypal', 'api_key' => env('PAYPAL_API_KEY', '')],
+        'stripe' => ['name' => 'stripe', 'api_key' => env('STRIPE_API_KEY', '')]
+    ],
+
 ];
 
