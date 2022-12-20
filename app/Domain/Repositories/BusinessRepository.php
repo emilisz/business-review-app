@@ -1,43 +1,69 @@
 <?php
+declare(strict_types=1);
 
 
 namespace App\Domain\Repositories;
 
-use App\Domain\Interfaces\RepositoryInterface;
+
+use App\Domain\Repositories\Interfaces\BusinessRepositoryInterface;
 use App\Models\Business;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 
-class BusinessRepository implements RepositoryInterface
+class BusinessRepository implements BusinessRepositoryInterface
 {
-    public function mainQuery()
+    public function mainQuery(): Builder
     {
-        return Business::withCount('ratings')
-            ->withAvg('ratings','rating')
-            ->with('ratings')
-            ->get();
-
-}
-
-
-    public function getOne($id)
-    {
-        return $this->mainQuery()->where('id', $id)->first();
+        return Business::select(['id', 'title', 'user_id', 'created_at', 'updated_at', 'description', 'image_url'])
+            ->withCount('ratings')
+            ->withAvg('ratings', 'rating')
+            ->with(['ratings']);
     }
 
-    public function getAll()
+
+    public function getOne($modelId): Model
     {
-        return $this->mainQuery();
+        return $this->mainQuery()
+            ->where('id', $modelId)
+            ->selectVisibleData($modelId)
+            ->firstOrFail();
     }
 
-    public function getAllByUser($user_id)
+    public function getAll(): Collection
+    {
+        return $this->mainQuery()->get();
+    }
+
+    public function getAllByUser($user_id): Builder
     {
         return $this->mainQuery()->where('user_id', $user_id);
     }
 
-    public function getAllBy($orderBy = 'rating_avg_rating')
+    public function getAllBy($orderBy = 'created_at'): Collection
     {
-        return $this->mainQuery()->sortByDesc($orderBy);
+        return $this->mainQuery()->get()->sortByDesc($orderBy);
+    }
+
+    public function createNew($data)
+    {
+        return Business::create([
+            ...$data,
+            ...['user_id' => auth()->id()]
+        ]);
+    }
+
+    public function update($modelId, $data): void
+    {
+        $model = Business::findOrFail($modelId);
+        $model->update($data);
     }
 
 
+    public function delete($modelId): void
+    {
+        $model = Business::findOrFail($modelId);
+        $model->delete();
+    }
 }

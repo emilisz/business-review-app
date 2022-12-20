@@ -21,11 +21,12 @@ class Rating extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function createNew(Business $business, $data)
-    {
-        $data['business_id'] =  $business->id;
-       return auth()->user()->ratings()->create($data);
-//        dd($data);
-    }
+//    public function createNew(Business $business, $data)
+//    {
+//        return self::create([
+//            ...$data,
+//            ...['business_id' =>  $business->id, 'user_id' => auth()->id()]
+//            ]);
+//    }
 
 }

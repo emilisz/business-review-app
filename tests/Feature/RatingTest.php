@@ -15,37 +15,29 @@ class RatingTest extends TestCase
 {
     use withFaker, RefreshDatabase ,DatabaseMigrations;
 
-    public function test_auth_user_can_post_ratings(): void
+    public function testAuthUserCanPostRatings(): void
     {
-        $this->logIn();
+        $rating = Rating::factory()->create();
 
-        $business = Business::factory()->create(['user_id' => auth()->id()]);
-        $rating = [
-            'rating' => $this->faker->numberBetween(1,5),
-            'comment' => $this->faker->sentence,
-            'business_id' => $business->id,
-            'user_id' => auth()->id()
-        ];
-
-        $this->post(route('rating.store',$business), $rating);
-        $this->get(route('business.show', $business))->assertSee($rating['comment']);
+        $this->logIn()->post(route('rating.store',$rating->business, $rating));
+        $this->get(route('business.show', $rating->business))->assertSee($rating->comment);
     }
 
-    public function test_rating_belongs_to_business(): void
+    public function testRatingBelongsToBusiness(): void
     {
         $rating = Rating::factory()->create();
 
         $this->assertInstanceOf(Business::class, $rating->business);
     }
 
-    public function test_rating_belongs_to_user(): void
+    public function testRatingBelongsToUser(): void
     {
         $rating = Rating::factory()->create();
 
         $this->assertInstanceOf(User::class, $rating->user);
     }
 
-    public function test_rating_requires_a_rating(): void
+    public function testRatingRequiresRating(): void
     {
         $this->logIn();
 
@@ -55,7 +47,7 @@ class RatingTest extends TestCase
         $this->post(route('rating.store',$business), $rating)->assertSessionHasErrors('rating');
     }
 
-    public function test_rating_do_not_require_a_comment(): void
+    public function testRatingDoNotRequireComment(): void
     {
         $this->logIn();
 
@@ -66,7 +58,7 @@ class RatingTest extends TestCase
         $this->get(route('business.show', $business))->assertSee($rating['rating']);
     }
 
-    public function test_rating_owner_can_delete_rating(): void
+    public function testRatingOwnerCanDeleteRating(): void
     {
         $rating = Rating::factory()->create();
         $this->logIn($rating->user);
@@ -75,7 +67,7 @@ class RatingTest extends TestCase
         $this->assertModelMissing($rating);
     }
 
-    public function test_guest_cannot_delete_rating(): void
+    public function testGuestCannotDeleteRating(): void
     {
         $rating = Rating::factory()->create();
         $this->delete(route('rating.delete',[$rating->business, $rating]));
@@ -86,7 +78,7 @@ class RatingTest extends TestCase
     /**
      * @dataProvider numbersProvider
      */
-    public function test_rating_between_numbers_required($number): void
+    public function testRatingBetweenNumbersRequired($number): void
     {
         $this->logIn();
 

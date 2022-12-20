@@ -5,23 +5,24 @@ declare(strict_types=1);
 namespace App\Domain\Repositories;
 
 
-use App\Domain\Repositories\Interfaces\RatingRepositoryInterface;
-use App\Models\Rating;
+use App\Domain\Repositories\Interfaces\PaymentRepositoryInterface;
+use App\Models\Payment;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-class RatingRepository implements RatingRepositoryInterface
+class PaymentRepository implements PaymentRepositoryInterface
 {
 
     public function mainQuery(): Builder
     {
-        return Rating::with('business', 'user');
+        return Payment::with('user');
+
     }
 
     public function getOne($modelId): Model
     {
-        return $this->mainQuery()->where('id', $modelId)->first();
+        return $this->mainQuery()->firstOrFail($modelId);
     }
 
     public function getAll(): Collection
@@ -34,23 +35,22 @@ class RatingRepository implements RatingRepositoryInterface
         return $this->mainQuery()->where('user_id', $user_id);
     }
 
-    public function createNew($businessId, $data)
-    {
-        return Rating::create([
-            ...$data,
-            ...['business_id' =>  $businessId, 'user_id' => auth()->id()]
-        ]);
-    }
-
     public function update($modelId, $data): void
     {
-        $model = Rating::findOrFail($modelId);
+        $model = Payment::findOrFail($modelId);
         $model->update($data);
     }
 
     public function delete($modelId): void
     {
-        $model = Rating::findOrFail($modelId);
+        $model = Payment::findOrFail($modelId);
         $model->delete();
     }
+
+
+    public function findAllNotExpired($user_id): Collection
+    {
+        return $this->getAllByUser($user_id)->get()->where('valid_till', '>', now());
+    }
+
 }

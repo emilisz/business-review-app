@@ -23,7 +23,10 @@ class BusinessFactory extends Factory
             'image_url' => fake()->imageUrl(),
             'user_id' => function(){
                 return User::factory()->create()->id;
-            }
+            },
+            'phone' => fake()->phoneNumber(),
+            'address' => fake()->address,
+            'employees' => fake()->randomDigit()
         ];
     }
 }

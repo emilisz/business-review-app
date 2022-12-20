@@ -2,8 +2,10 @@
 
 
 use App\Domain\Repositories\BusinessRepository;
+use App\Domain\Repositories\PaymentRepository;
 use App\Domain\Repositories\RatingRepository;
 use App\Http\Controllers\BusinessController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RatingController;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 
 Route::get('/', function (){
     return redirect()->route('home');
@@ -39,18 +42,18 @@ Route::controller(BusinessController::class)->group(function () {
 
 Route::middleware('auth')->controller(RatingController::class)->group(function () {
     Route::post('/businesses/{business}/ratings', 'store')->name('rating.store');
-    Route::delete('/businesses/{business}/ratings/{rating}', 'delete')->name('rating.delete');
+    Route::delete('/ratings/{rating}', 'delete')->name('rating.delete');
+});
+
+Route::middleware('auth')->controller(PaymentController::class)->group(function () {
+    Route::get('/payments/select', 'index')->name('payment.create');
+    Route::post('/payments', 'store')->name('payment.store');
+    Route::delete('/payments/{payment}', 'delete')->name('payment.delete');
 });
 
 
-Route::get('/dashboard', function () {
-    $businesses = (new BusinessRepository)->getAllByUser(auth()->id());
-    $ratings =    (new RatingRepository())->getAllByUser(auth()->id())->paginate(2);
-
-    return view('dashboard', compact('businesses', 'ratings'));
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

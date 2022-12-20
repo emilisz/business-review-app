@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Domain\Repositories\PaymentRepository;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -52,4 +53,21 @@ class User extends Authenticatable
     {
         return $this->hasMany(Rating::class);
     }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class)->orderByDesc('created_at');
+    }
+
+    public function isPremium():bool
+    {
+        return count((new PaymentRepository())->findAllNotExpired(auth()->id())) > 0;
+    }
+
+    public  function isOwner($businessId)
+    {
+        return $this->businesses->contains($businessId);
+    }
+
+
 }
