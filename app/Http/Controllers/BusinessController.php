@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
@@ -44,7 +45,6 @@ class BusinessController extends Controller
     public function store(StoreBusinessRequest $request): RedirectResponse
     {
         $this->repository->createNew($request->validated());
-
         return redirect()->route('home')->with('status', "Saved!");
     }
 

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 
 namespace App\Domain\Repositories\Interfaces;
@@ -12,7 +13,7 @@ interface BaseInterface
 {
     public function mainQuery(): Builder;
 
-    public function getOne($modelId): Model;
+    public function getOne($modelId): ?Model;
 
     public function getAll(): Collection;
 
