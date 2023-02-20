@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
 
         Business::factory()
             ->count(100)
-            ->hasRatings(20)
+            ->hasRatings(11)
             ->create();
 
          User::factory()->create([
@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
          ]);
 
         Payment::factory()
-            ->count(50)
+            ->count(20)
             ->create();
     }
 }
